@@ -1,31 +1,45 @@
+# JUDGEBERT — Legal Meaning Preservation (LMP)
 
-# JUDGEBERT Legal Meaning Preservation
+## Overview
+JUDGEBERT is a research prototype that compares an original legal sentence
+with a simplified version in the same language. It combines multilingual
+sentence similarity with rule-based warnings for selected legal-detail changes.
 
-## Objective
-Evaluate whether a simplified legal sentence preserves the
-meaning of the original sentence.
+## Current features
+- English and Hindi text input in the interactive demo.
+- Multilingual sentence embeddings using
+  `paraphrase-multilingual-MiniLM-L12-v2`.
+- Semantic similarity calculation.
+- Warnings for possible differences in negation, obligation/permission terms,
+  numbers/dates/currency, and selected legal-party terms.
+- Preliminary heuristic score from 1 to 10.
+- CSV export of evaluation and demo results.
 
-## Languages
-- English
-- Hindi
+## Method
+1. Encode the original and simplified text.
+2. Calculate cosine similarity between their sentence embeddings.
+3. Compare selected legal-sensitive terms.
+4. Produce a preliminary score and warning flags.
 
-## Main components
-- Dataset preparation and human annotation
-- TF-IDF baseline
-- Multilingual embedding baseline
-- Transformer-based LMP regression
-- Evaluation and error analysis
-- Streamlit web interface
+## Important limitations
+- The score is heuristic and has not been calibrated against a sufficiently
+  large, reliable set of human-rated examples.
+- Semantic similarity does not prove legal meaning preservation.
+- Rule warnings can include harmless wording changes and may miss other risks.
+- English and Hindi performance must be evaluated separately with suitable data.
+- This prototype is for research and demonstration, not legal advice.
 
-## Project status
-Initial setup in progress. Predictions and evaluation results
-will be reported only after implementation and testing.
+## Project files
+The Google Drive project folder contains the working notebook outputs,
+baseline results, score results, summaries, and draft project report.
+Copy only files suitable for public release into the GitHub repository.
 
-## Run the application
-Install dependencies:
+## Future work
+- Create a reliable set of same-language simplification pairs.
+- Collect human ratings using a documented rubric.
+- Evaluate agreement with human ratings and calibrate the score.
+- Expand Hindi evaluation and legal-detail detection.
+- Compare with stronger baselines.
 
-    pip install -r requirements.txt
-
-Run Streamlit:
-
-    streamlit run app/streamlit_app.py
+## Status
+Working prototype; further evaluation and validation are required.
