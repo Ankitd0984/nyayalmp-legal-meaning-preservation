@@ -19,3 +19,28 @@ data/raw/
 
 # Secrets
 .streamlit/secrets.toml
+
+# Python environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Jupyter temporary files
+.ipynb_checkpoints/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Temporary files and logs
+*.log
+*.tmp
