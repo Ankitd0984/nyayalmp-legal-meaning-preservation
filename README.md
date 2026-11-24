@@ -1,167 +1,131 @@
-# JUDGEBERT – Legal Meaning Preservation (LMP)
+# NyayaLMP
+### An Explainable English–Hindi Legal Meaning Preservation System for Indian Property Law
 
-A prototype system for comparing original legal text with simplified legal text and identifying potential changes in legal meaning.
+**NyayaLMP** is a B.Tech CSE research prototype that compares an original legal passage with a simplified version and surfaces signals that may indicate a change in legal meaning. The name combines *Nyaya* (न्याय, justice) with *LMP* (Legal Meaning Preservation).
 
-## 1. Project Overview
+The project focuses on English and Hindi text related to Indian property and tenancy law. It is designed to support human review—not to provide legal advice, certify equivalence, or make legal decisions.
 
-JUDGEBERT aims to support the evaluation of whether a simplified legal sentence preserves the meaning of its original version.
+---
 
-The application compares two text passages and provides:
-- Semantic similarity using a multilingual MiniLM sentence-transformer.
-- Rule-based warnings for potential changes in negation, legal modal terms, conditions, exceptions, and numbers.
-- A preliminary LMP indicator.
-- A final review status highlighting possible meaning changes.
+## What the application does
 
-**Important:** JUDGEBERT is an academic prototype. Its output is not legal advice, legal certification, or an expert-validated legal judgment.
+Paste an original legal passage and its simplified candidate. NyayaLMP displays three distinct signals:
 
-## 2. Supported Languages
+1. **TF-IDF + Ridge estimate** — a supervised regression estimate trained on the annotated bilingual pair corpus. It is shown separately and is not a calibrated probability.
+2. **MiniLM semantic similarity** — cosine similarity between multilingual sentence embeddings. Similarity is not the same as legal equivalence.
+3. **Rule-based legal-risk checks** — heuristic checks for selected English/Hindi negation, modality/obligation, conditions/exceptions, and numeric expressions.
 
-- English
-- Hindi (experimental; limited evaluation data)
+The interface keeps these signals separate to reduce the risk of interpreting one score as a legal verdict. A triggered rule is a prompt for review; it may be a false positive, and the rules may miss complex changes.
 
-The current Streamlit application uses a multilingual sentence-transformer. Hindi performance has not been sufficiently validated.
+## Research data and model scope
 
-## 3. Methodology
+The annotation corpus used for the deployable regression artifact contains **360 labelled pairs from 180 source provisions**, with **180 English and 180 Hindi records**. The current artifact is fitted on the full QA-fixed corpus for application inference.
 
-### A. Dataset Preparation
-- Legal sentence-pair preparation and cleaning.
-- Duplicate and incomplete record checks.
-- Dataset-derived binary labels: preserved and changed.
-- Training, validation, and test split creation.
+**Important evaluation distinction:** the full-corpus artifact is not a held-out evaluation model. Do not present its training fit as test performance. Use the grouped-provision holdout and leave-one-Act-out results from the research notebook/report when discussing evaluation.
 
-### B. Baseline Experiments
-- TF-IDF with Logistic Regression.
-- TF-IDF cosine similarity.
-- Multilingual MiniLM cosine similarity.
-- MiniLM embeddings with Ridge regression as an experimental comparison.
+The dataset currently has important limitations:
+- The current corpus was labelled by one annotator.
+- Source verification is incomplete, particularly for Hindi statutory text.
+- It covers selected Indian property/tenancy provisions, not Indian law generally.
+- The model and heuristic checks are experimental and require expert review.
 
-### C. Current Application
-The current application combines:
+## Interface identity
 
-1. **Semantic similarity:** MiniLM generates sentence embeddings and calculates cosine similarity.
-2. **Legal-risk checks:** Rule-based checks identify changes in negation, modal terms, conditions, and numbers.
-3. **Hybrid decision logic:** Potentially important rule warnings trigger a review-required status, even when semantic similarity is high.
+NyayaLMP's visual identity uses a deep legal-navy foundation, teal accents, and a restrained saffron highlight inspired by Indian civic/legal visual language. The **न्याय** mark refers to justice; it is a project identity, not an official government seal or endorsement.
 
-The Ridge regression experiment is not used for the displayed application indicator because its predictions were not reliably calibrated to the intended 1–10 range.
-
-## 4. Experimental Results
-
-The TF-IDF Logistic Regression baseline achieved approximately 94.37% test accuracy against the existing dataset-derived binary labels.
-
-The comparison experiment reported:
-
-| Method | Test accuracy | Preserved F1 |
-|---|---:|---:|
-| TF-IDF cosine | 0.7130 | 0.8321 |
-| MiniLM cosine | 0.7465 | 0.8548 |
-| MiniLM + Ridge | 0.9454 | 0.9642 |
-
-These results measure agreement with existing dataset-derived labels, not human legal-expert judgments. They should not be interpreted as legal meaning-preservation accuracy.
-
-## 5. Application Testing
-
-The current Streamlit prototype was tested using three demonstration cases:
-
-| Test case | Expected behaviour | Observed behaviour |
-|---|---|---|
-| Equivalent paraphrase | High indicator, no critical warning | Passed |
-| Added negation reversing an obligation | Negation warning and review required | Passed |
-| `May` changed to `must` | Modal warning and review required | Passed |
-
-These are demonstration tests, not comprehensive validation.
-
-## 6. Technology Stack
-
-- Python 3.11
-- Streamlit
-- PyTorch
-- Sentence-Transformers
-- Multilingual MiniLM
-- Scikit-learn
-- Pandas
-- NumPy
-- Matplotlib and Seaborn
-
-## 7. Project Structure
+## Repository structure
 
 ```text
-Project NLP/
-│
+NyayaLMP/
 ├── app/
 │   ├── streamlit_app.py
 │   └── audit_dataset.py
-│
-├── data/
 ├── models/
-├── notebooks/
-├── reports/
-├── results/
+│   ├── nyayalmp_tfidf_ridge.joblib
+│   └── nyayalmp_tfidf_ridge.metadata.json
 ├── src/
-│
-├── JUDGEBERT_LMP_submission/
-│   ├── README.md
-│   ├── JUDGEBERT_Project_Report_Draft.md
-│   └── experiment result CSV files
-│
-├── .gitignore
+│   └── models/
+│       ├── inference.py
+│       └── train_export_tfidf.py
+├── tests/
+│   └── test_model_inference.py
+├── results/
+│   └── experiment result files
+├── NyayaLMP_Project_Resources/
+├── 01_exploration_ipynb.ipynb
+├── MODEL_CARD.md
 ├── requirements.txt
 └── README.md
 ```
 
-## 8. Installation and Execution
+## Run locally
 
-### Clone the repository
+### 1. Requirements
+- Python 3.11 recommended
+- Git
+- Internet access on first launch to download the multilingual MiniLM encoder, unless it is already cached
 
-```bash
-git clone https://github.com/Ankitd0984/judgebert-legal-lmp.git
-cd judgebert-legal-lmp
-```
-
-### Create a virtual environment
+### 2. Clone
 
 ```bash
-python -m venv .venv
+git clone https://github.com/Ankitd0984/nyayalmp-legal-meaning-preservation.git
+cd nyayalmp-legal-meaning-preservation
 ```
 
-Activate on Windows PowerShell:
+If you choose a different GitHub repository name, update the clone URL accordingly.
 
+### 3. Create and activate a virtual environment
+
+**Windows PowerShell**
 ```powershell
+python -m venv .venv
 .venv\Scripts\Activate.ps1
 ```
 
-### Install dependencies
+**macOS / Linux**
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+### 4. Install dependencies
 
 ```bash
+python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-### Run the application
+### 5. Launch the app
 
 ```bash
 python -m streamlit run app/streamlit_app.py
 ```
 
-Open the local URL displayed in the terminal.
+Open the local URL printed by Streamlit (usually `http://localhost:8501`).
 
-The first launch may download the multilingual MiniLM model and therefore requires an internet connection.
+### 6. Run tests
 
-## 9. Limitations
+```bash
+python -m pytest -q
+```
 
-- Existing binary labels are dataset-derived weak labels, not human-verified legal judgments.
-- The current 1–10 indicator is a heuristic based on semantic similarity and rule-based warnings. It is not a calibrated probability or validated legal score.
-- Rule-based checks cover only selected legal-language patterns.
-- Complex legal meaning, context, parties, scope, exceptions, and cross-references may not be detected.
-- Hindi data is currently insufficient for robust performance claims.
-- Human legal review remains necessary.
+## Rebuild the regression artifact (optional)
 
-## 10. Future Improvements
+The trained artifact is included in `models/`. To rebuild it from the QA-fixed annotation workbook:
 
-- Build a human-annotated legal meaning-preservation dataset.
-- Improve detection of rights, duties, exceptions, conditions, parties, and scope.
-- Evaluate English and Hindi separately.
-- Conduct broader testing with legal-domain experts.
-- Improve score calibration and model validation.
+```bash
+python src/models/train_export_tfidf.py --data path/to/your_QA_fixed_annotation_workbook.xlsx
+```
 
-## 11. Academic Project Disclaimer
+The script writes `models/nyayalmp_tfidf_ridge.joblib` and its metadata file. The workbook is not bundled in this repository because dataset redistribution/source permissions should be checked separately.
 
-JUDGEBERT is developed as a B.Tech Computer Science and Engineering academic project. It is intended for research and educational demonstration, not for making legal decisions or replacing qualified legal professionals.
+## Suggested GitHub repository settings
+
+- **Repository name:** `nyayalmp-legal-meaning-preservation`
+- **Description:** `Explainable English–Hindi legal meaning preservation prototype for Indian property law.`
+- **Visibility:** Public only if the included data and legal text excerpts are permitted to be redistributed; otherwise keep the repository private or remove restricted data files.
+- Add a repository screenshot to `assets/` after capturing the final app screen.
+
+## Disclaimer
+
+NyayaLMP is an academic research prototype developed for educational demonstration. It is not legal advice, does not certify that a simplification preserves legal effect, and must not be used as a substitute for checking the official legal source or consulting a qualified legal professional.

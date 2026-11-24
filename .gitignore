@@ -9,6 +9,8 @@ __pycache__/
 # Model weights and checkpoints
 models/*
 !models/.gitkeep
+!models/nyayalmp_tfidf_ridge.joblib
+!models/nyayalmp_tfidf_ridge.metadata.json
 
 # Generated outputs
 results/*

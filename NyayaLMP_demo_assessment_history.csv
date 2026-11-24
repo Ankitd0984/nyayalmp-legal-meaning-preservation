@@ -1,0 +1,2 @@
+timestamp,language,original_text,simplified_text,semantic_similarity,preliminary_lmp_score,warnings
+2026-10-26T06:33:17,en,The tenant must pay rent by the fifth day of each month.,The tenant may pay rent whenever they want.,0.716,5,Legal obligation or permission terms differ; inspect carefully.

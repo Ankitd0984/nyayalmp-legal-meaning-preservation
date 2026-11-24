@@ -1,0 +1,18 @@
+{
+  "model_name": "NyayaLMP TF-IDF word+char n-grams + Ridge",
+  "model_version": "1.0.0",
+  "feature_definition": "Original_Legal_Text + ' [SEP] ' + Simplified_Text; word (1,2) and char (2,5) TF-IDF concatenated",
+  "ridge_alpha": 1.0,
+  "training_rows": 360,
+  "unique_source_provisions": 180,
+  "language_counts": {
+    "English": 180,
+    "Hindi": 180
+  },
+  "fit_scope": "full QA-fixed corpus for deployment inference; not a held-out evaluation model",
+  "input_workbook": "NyayaLMP_360_Bilingual_Balanced_Evaluation_Sheet_QA_FIXED_v1.xlsx",
+  "input_sheet": "Human_LMP_Annotation",
+  "sklearn_version": "1.6.1",
+  "scipy_version": "1.16.3",
+  "python_version": "3.13.18"
+}
